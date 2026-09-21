@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Resume Shortlisting Tool</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>🤖 AI-Powered Resume Shortlisting Tool</h1>
+    <p>Upload resumes, paste a job description, and get instantly ranked &amp; shortlisted candidates.</p>
+  </header>
+
+  <main class="card">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('analyze') }}" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="job_description">Job Description <span class="req">*</span></label>
+        <textarea id="job_description" name="job_description" rows="8"
+          placeholder="Paste the full job description here..." required></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="required_skills">Required Skills (comma separated)</label>
+          <input type="text" id="required_skills" name="required_skills"
+            placeholder="e.g. Python, SQL, Django, AWS">
+        </div>
+
+        <div class="form-group">
+          <label for="min_experience">Minimum Experience (years) — optional</label>
+          <input type="number" id="min_experience" name="min_experience" min="0" step="0.5" placeholder="e.g. 2">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="threshold">Shortlisting Threshold: <span id="thresholdVal">50</span>%</label>
+        <input type="range" id="threshold" name="threshold" min="0" max="100" value="50"
+          oninput="document.getElementById('thresholdVal').innerText = this.value">
+      </div>
+
+      <div class="form-group">
+        <label for="resumes">Upload Resumes (PDF / DOCX / TXT — multiple allowed) <span class="req">*</span></label>
+        <input type="file" id="resumes" name="resumes" multiple accept=".pdf,.docx,.txt" required>
+      </div>
+
+      <button type="submit" class="btn-primary">🔍 Analyze &amp; Rank Resumes</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>Built with Flask, scikit-learn (TF-IDF + Cosine Similarity) &mdash; runs fully offline.</p>
+  </footer>
+</div>
+</body>
+</html>

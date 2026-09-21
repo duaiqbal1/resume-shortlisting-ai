@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shortlisting Results</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>📊 Shortlisting Results</h1>
+    <p>{{ shortlisted_count }} of {{ total }} candidates shortlisted (threshold: {{ threshold }}%)</p>
+  </header>
+
+  <main class="card wide">
+    <a href="{{ url_for('index') }}" class="btn-secondary">&larr; Run New Analysis</a>
+
+    {% if required_skills %}
+    <p class="skills-line"><strong>Required skills:</strong> {{ required_skills | join(', ') }}</p>
+    {% endif %}
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Candidate</th>
+            <th>Contact</th>
+            <th>Experience</th>
+            <th>Match Score</th>
+            <th>Skill Coverage</th>
+            <th>Matched Skills</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in candidates %}
+          <tr class="{{ 'row-pass' if c.shortlisted else 'row-fail' }}">
+            <td>{{ loop.index }}</td>
+            <td>
+              <strong>{{ c.name }}</strong><br>
+              <small>{{ c.filename }}</small>
+            </td>
+            <td>
+              📧 {{ c.email }}<br>
+              📞 {{ c.phone }}
+            </td>
+            <td>{{ c.experience_years if c.experience_years > 0 else "N/A" }}</td>
+            <td>
+              <div class="score-bar">
+                <div class="score-fill" style="width: {{ c.match_score }}%;"></div>
+              </div>
+              <span>{{ c.match_score }}%</span>
+            </td>
+            <td>{{ c.skill_coverage }}%</td>
+            <td>
+              {% if c.matched_skills %}
+                {% for s in c.matched_skills %}<span class="badge">{{ s }}</span>{% endfor %}
+              {% else %}
+                <span class="muted">—</span>
+              {% endif %}
+              {% if c.missing_skills %}
+                <br><small class="muted">Missing: {{ c.missing_skills | join(', ') }}</small>
+              {% endif %}
+            </td>
+            <td>
+              {% if c.shortlisted %}
+                <span class="pill pill-pass">✅ Shortlisted</span>
+              {% else %}
+                <span class="pill pill-fail">❌ Rejected</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p>Ranked using TF-IDF text similarity (70%) + required-skill coverage (30%).</p>
+  </footer>
+</div>
+</body>
+</html>
