@@ -134,6 +134,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 🙋 Author
 
-Made with ❤️ by [Your Name](https://github.com/your-username)
+Made with ❤️ by [Dua Iqbal](https://github.com/duaiqbal1)
 
 If you found this useful, please ⭐ star the repo!
